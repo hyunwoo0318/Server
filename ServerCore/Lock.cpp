@@ -25,19 +25,19 @@ void Lock::WriteLock(const char* name)
 
 	//아무도 소유 및 공유하고 있지 않을때, 경합해서 소유권을 얻음
 	//-- 모든 값이 empty flag인 경우임.
-	//if (_lockflag == EMPTY_FLAG)
-	//{
-	//	const int32 desired = ((LThreadId << 16) && WRITE_THREAD_MASK);
-	//	_lockflag = desired;
-	//	// 멀티쓰레드 환경에서는 중간에 누가 쓸수 있기때문에 따로해야함
-	//}
+	if (_lockflag == EMPTY_FLAG)
+	{
+		const int32 desired = ((LThreadId << 16) && WRITE_THREAD_MASK);
+		_lockflag = desired;
+		// 멀티쓰레드 환경에서는 중간에 누가 쓸수 있기때문에 따로해야함
+	}
 	const int64 beginTick = ::GetTickCount64();
 	const uint32 desired = ((LThreadId << 16) & WRITE_THREAD_MASK);
 	while (1)
 	{
 		for (uint32 Spincount = 0; Spincount < MAX_SPIN_COUNT; Spincount++)
 		{
-			uint32 expected = EMPTY_FLAG;
+			uint32 expected = EMPTY_FLAG; //계속 초기화를 해줘야함.
 			if (_lockflag.compare_exchange_strong(OUT expected, desired))
 			{
 				_writecount++;

@@ -6,73 +6,73 @@
 #include <windows.h>
 #include <future>
 #include "ThreadManager.h"
+#include "RefCounting.h"
 
-//소수 구하기 문제
-
-class TestLock
+class Wraith: public RefCountable
 {
-	USE_LOCK;
-
 public:
-	int32 TestRead()
-	{
-		READ_LOCK;
-		if (_queue.empty())
-			return -1;
-		else return _queue.front();
-	}
-
-	void TestPop()
-	{
-		WRITE_LOCK;
-		
-		if (_queue.empty() == false)
-			_queue.pop();
-	}
-
-	void TestPush()
-	{
-		WRITE_LOCK;
-
-		_queue.push(rand() % 100);
-	}
-private:
-	queue<int32> _queue;
+	int _hp = 150;
+	int _posX = 0;
+	int _posY = 0;
 };
 
-TestLock testlock;
-
-void ThreadWrite()
+class Missile : public RefCountable
 {
-	while (1)
+public:
+	void SetTarget(WraithRef target)
 	{
-		testlock.TestPush();
-		this_thread::sleep_for(1ms);
-		testlock.TestPop();
+		_target = target;
+		//중간에 개입 가능 -> 멀티쓰레드
+		//target->AddRef();
 	}
-}
+	
 
-void ThreadRead()
-{
-	while (1)
+	bool Update()
 	{
-		int32 value = testlock.TestRead();
-		cout << value << endl;
-		this_thread::sleep_for(1ms);
+		if (_target == nullptr)
+			return true;
+
+		int PosX = _target->_posX;
+		int PosY = _target->_posY;
+
+		if (_target->_hp == 0)
+		{
+			_target->ReleaseRef();
+			_target = nullptr;
+			return true;
+		}
+		return false;
 	}
-}
+
+	WraithRef _target = nullptr;
+};
+
+using WraithRef = TsharedPtr<Wraith>;
+using MissileRef = TsharedPtr<Missile>;
 
 int main()
 {
-	for (int32 i = 0; i < 5; i++)
-	{
-		GThreadManager->Launch(ThreadRead);
-	}
+	WraithRef wraith = new Wraith();
+	wraith->ReleaseRef();
+	MissileRef missile = new Missile();
+	missile->ReleaseRef();
 
-	for (int32 i = 0; i < 5; i++)
-	{
-		GThreadManager->Launch(ThreadWrite);
-	}
+	missile->SetTarget(wraith);
 
-	GThreadManager->Join();
+	wraith->_hp = 0;
+	//delete wraith;
+	//wraith->ReleaseRef();
+	wraith = nullptr;
+
+	while (1)
+	{
+		if (missile.IsNull())
+		{
+			missile->Update();
+		}
+	}
+	return 0;
+	//missile->ReleaseRef();
+	missile = nullptr;
+	//delete missile;
 }

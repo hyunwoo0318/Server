@@ -21,6 +21,15 @@
     <ClCompile Include="Lock구현_main.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="Reference_counting.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Smart_pointer.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="StompAllocator.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

@@ -43,18 +43,18 @@ public:
 	//복사
 	TsharedPtr(const TsharedPtr& rhs) { Set(rhs._ptr); }
 	//이동
-	TSharedPtr(const TsharedPtr&& rhs)
+	TsharedPtr(const TsharedPtr&& rhs)
 	{
 		_ptr = rhs._ptr; rhs._ptr = nullptr;
 	}
 	//상속 관계 복사
-	template <typename u>
-	TSharedPtr(const TsharedPtr<U>& rhs) { Set(static_cast<T*>(rhs._ptr)); }
+	template <typename U>
+	TsharedPtr(const TsharedPtr<U>& rhs) { Set(static_cast<T*>(rhs._ptr)); }
 
 	//복사연산자
-	TSharedPtr& operator =(const TsharedPtr& rhs)
+	TsharedPtr& operator =(const TsharedPtr& rhs)
 	{
-		if (ptr != rhs._ptr)
+		if (_ptr != rhs._ptr)
 		{
 			Release();
 			Set(rhs._ptr);
@@ -63,7 +63,7 @@ public:
 	}
 
 	//이동 연산자
-	TSharedPtr& operator=(TsharedPtr&& rhs)
+	TsharedPtr& operator=(TsharedPtr&& rhs)
 	{
 		Release();
 		_ptr = rhs._ptr;
@@ -75,7 +75,7 @@ public:
 	bool	operator ==(T* ptr) { return ptr == _ptr; }
 	bool	 operator !=(const TsharedPtr& rhs) { return rhs._ptr != _ptr; }
 	bool	 operator !=(T* ptr) { return ptr != _ptr; }
-	bool	 operator <(const TsharedPtr& rhs) { return ptr < rhs._ptr; }
+	bool	 operator <(const TsharedPtr& rhs) { return _ptr < rhs._ptr; }
 	T*		 operator *() { return _ptr; }
 	T*		 operator ->() { return _ptr; }
 	const T* operator *() const { return _ptr; }

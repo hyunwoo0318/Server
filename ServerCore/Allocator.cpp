@@ -41,7 +41,7 @@ void StompAllocator::Release(void* ptr)
  PoolAllocator
 -----------------*/
 
-void* PoolAllocator::Alloc(int32 size)
+void* PoolAllocator::Alloc(int size)
 {
 	return GMemory->Allocate(size);
 }

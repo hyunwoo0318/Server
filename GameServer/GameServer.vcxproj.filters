@@ -30,12 +30,16 @@
     <ClCompile Include="StompAllocator.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="LockFreeStack.cpp" />
+    <ClCompile Include="LockFreeStack.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="LockFreeStack.h" />
+    <ClInclude Include="LockFreeStack.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

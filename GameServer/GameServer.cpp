@@ -10,26 +10,64 @@
 #include"Memory.h"
 #include"LockFreeStack.h"
 
+DECLSPEC_ALIGN(16)
 class Data //: public SListEntry
 {
 public:
 	//리스트에서 data와 link를 따로두는 방식을 사용했는데
 	//Data안에서 link까지 관리하는 Data의 형식을 만들어서 우리가 만든 데이터들은 사용할수있다.
-	SListEntry _entry;
-
-	int32 _hp;
-	int32 _mp;
+	SLIST_ENTRY _entry;
+	int64 _rand = rand() % 100;
 };
+
+SLIST_HEADER* GHeader;
 
 int main()
 {
-	SListHeader header;
-	InitialzeHead(&header);
+	GHeader = new SLIST_HEADER();
+	ASSERT_CRASH(((uint64)GHeader % 16) == 0);
+	::InitializeSListHead(GHeader);
 
-	Data* data = new Data();
-	data->_hp = 10;
-	data->_mp = 20;
-	PushEntrySList(&header, (SListEntry*)data);
+	for (int32 i = 0; i < 3; i++)
+	{
+		GThreadManager->Launch([]()
+			{
+				while (1)
+				{
+					Data* data = new Data;
+					ASSERT_CRASH(((uint64)GHeader % 16) == 0);
 
-	Data* popData = (Data*)PopEntrySList(&header);
+					::InterlockedPushEntrySList(GHeader, (SLIST_ENTRY*)data);
+					this_thread::sleep_for(10ms);
+				}
+
+
+			});
+	}
+
+	for (int32 i = 0; i < 3; i++)
+	{
+		GThreadManager->Launch([]()
+			{
+				while (1)
+				{
+					Data* pop = nullptr;
+					pop = (Data*)::InterlockedPopEntrySList(GHeader);
+
+					if (pop)
+					{
+						cout << pop->_rand << endl;
+						delete pop;
+					}
+					else
+					{
+						cout << "none" << endl;
+					}
+				}
+
+
+			});
+	}
+
+	GThreadManager->Join();
 }

@@ -62,6 +62,6 @@ public:
 	}
 	void deadlocate(T* ptr, size_t count)
 	{
-		xrelease(ptr);
+		_xrelease(ptr);
 	}
 };

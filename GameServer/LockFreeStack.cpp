@@ -104,4 +104,6 @@ SListEntry* PopEntrySList(SListHeader* header)
 		if(::InterlockedCompareExchange128((int64*)header, desired.region, desired.alignment, (int64*)&expected )== 1)
 			break;
 	}
+	return entry;
+
 }

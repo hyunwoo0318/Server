@@ -5,7 +5,7 @@
 	MemoryPool
 ----------------*/
 
-MemoryPool::MemoryPool(int32 allocSize) : _allocsize(allocsize)
+MemoryPool::MemoryPool(int32 allocSize) : _allocsize(allocSize)
 {
 }
 

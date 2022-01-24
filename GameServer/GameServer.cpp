@@ -6,68 +6,73 @@
 #include <windows.h>
 #include <future>
 #include "ThreadManager.h"
-#include "RefCounting.h"
-#include"Memory.h"
-#include"LockFreeStack.h"
 
-DECLSPEC_ALIGN(16)
-class Data //: public SListEntry
-{
-public:
-	//리스트에서 data와 link를 따로두는 방식을 사용했는데
-	//Data안에서 link까지 관리하는 Data의 형식을 만들어서 우리가 만든 데이터들은 사용할수있다.
-	SLIST_ENTRY _entry;
-	int64 _rand = rand() % 100;
-};
-
-SLIST_HEADER* GHeader;
+#include<WinSock2.h>
+#include<MSWSock.h>
+#include<ws2tcpip.h>
+#pragma comment(lib, "ws2_32.lib")
 
 int main()
 {
-	GHeader = new SLIST_HEADER();
-	ASSERT_CRASH(((uint64)GHeader % 16) == 0);
-	::InitializeSListHead(GHeader);
+	//윈속 초기화
+	WSADATA wsaData;
+	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+		return 0;
 
-	for (int32 i = 0; i < 3; i++)
+	SOCKET listenSocket = ::socket(AF_INET, SOCK_STREAM, 0);
+	if (listenSocket == INVALID_SOCKET)
 	{
-		GThreadManager->Launch([]()
-			{
-				while (1)
-				{
-					Data* data = new Data;
-					ASSERT_CRASH(((uint64)GHeader % 16) == 0);
-
-					::InterlockedPushEntrySList(GHeader, (SLIST_ENTRY*)data);
-					this_thread::sleep_for(10ms);
-				}
-
-
-			});
+		int32 errCode = ::WSAGetLastError();
+		cout << "socket error code" << errCode << endl;
+		return 0;
 	}
 
-	for (int32 i = 0; i < 3; i++)
+	//나의 주소는? (주소 + port) -> 아파트 + 호수
+	SOCKADDR_IN serverAddr; //IPV4
+	::memset(&serverAddr, 0, sizeof(serverAddr));
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY); // 너가 알아서 정해줘
+	serverAddr.sin_port = ::htons(7777); 
+
+	//안내원의 폰을 개통 -> 식당의 대표 번호
+	if (::bind(listenSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
 	{
-		GThreadManager->Launch([]()
-			{
-				while (1)
-				{
-					Data* pop = nullptr;
-					pop = (Data*)::InterlockedPopEntrySList(GHeader);
-
-					if (pop)
-					{
-						cout << pop->_rand << endl;
-						delete pop;
-					}
-					else
-					{
-						cout << "none" << endl;
-					}
-				}
-
-
-			});
+		int32 errCode = ::WSAGetLastError();
+			cout << "Bind error code" << errCode << endl;
+			return 0;
 	}
 
-	GThreadManager->Join();
+	//영업 시작 ( , 대기열의 최대한도)
+	if (::listen(listenSocket, 10) == SOCKET_ERROR)
+	{
+		int32 errCode = ::WSAGetLastError();
+		cout << "Listen error code" << errCode << endl;
+		return 0;
+	}
+
+	while (1)
+	{
+		SOCKADDR_IN clientAddr; //IPV4
+		::memset(&clientAddr, 0, sizeof(clientAddr));
+		int32 addLen = sizeof(clientAddr);
+
+		SOCKET clientsocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addLen);
+		if (clientsocket == INVALID_SOCKET)
+		{
+			int32 errCode = ::WSAGetLastError();
+			cout << "Listen error code" << errCode << endl;
+			return 0;
+		}
+
+		//손님 입장
+		char ipAddress[16];
+		//정수를 문자열로 바꿔주는 함수
+		::inet_ntop(AF_INET, &clientAddr.sin_addr, ipAddress, sizeof(ipAddress));
+		cout << "client connected! IP=" << ipAddress << endl;
+
+		//TODO
+	}
+
+	//윈속 종료
+	::WSACleanup();
 }

@@ -48,5 +48,5 @@ template<typename Type>
 void xdelete(Type* obj)
 {
 	obj->~Type();
-	xrelease(obj);
+	_xrelease(obj);
 }

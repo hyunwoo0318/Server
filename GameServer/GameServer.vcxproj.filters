@@ -36,6 +36,18 @@
     <ClCompile Include="Object_main.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="TCP_UDP.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="socket_option.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Non-Blocking.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Select Model.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

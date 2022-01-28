@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="DummyClient.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="TCP UDP.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

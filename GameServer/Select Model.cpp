@@ -13,21 +13,21 @@
 #pragma comment(lib, "ws2_32.lib")
 
 
-void HandleError(const char* cause)
-{
-	int32 errCode = ::WSAGetLastError();
-	cout << cause << "ErrorCode : " << errCode << endl;
-}
-
-const int32 BUFSIZE = 1000;
-
-struct Session
-{
-	SOCKET socket = INVALID_SOCKET;
-	char recvBuffer[BUFSIZE];
-	int32 recvBytes = 0;
-	int32 sendBytes = 0;
-};
+//void HandleError(const char* cause)
+//{
+//	int32 errCode = ::WSAGetLastError();
+//	cout << cause << "ErrorCode : " << errCode << endl;
+//}
+//
+//const int32 BUFSIZE = 1000;
+//
+//struct Session
+//{
+//	SOCKET socket = INVALID_SOCKET;
+//	char recvBuffer[BUFSIZE];
+//	int32 recvBytes = 0;
+//	int32 sendBytes = 0;
+//};
 
 
 //int main()

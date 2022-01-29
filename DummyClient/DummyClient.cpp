@@ -1,21 +1,22 @@
 ﻿#include "pch.h"
 #include <iostream>
 
-#include<WinSock2.h>
-#include<MSWSock.h>
-#include<WS2tcpip.h>
-
+#include <winsock2.h>
+#include <mswsock.h>
+#include <ws2tcpip.h>
 #pragma comment(lib, "ws2_32.lib")
 
 void HandleError(const char* cause)
 {
 	int32 errCode = ::WSAGetLastError();
-	cout << cause << "ErrorCode : " << errCode << endl;
+	cout << cause << " ErrorCode : " << errCode << endl;
 }
 
 int main()
 {
-	WSADATA wsaData;
+	this_thread::sleep_for(1s);
+
+	WSAData wsaData;
 	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 		return 0;
 
@@ -30,30 +31,109 @@ int main()
 	SOCKADDR_IN serverAddr;
 	::memset(&serverAddr, 0, sizeof(serverAddr));
 	serverAddr.sin_family = AF_INET;
-	::inet_pton(AF_INET, "127.0.0.1" , &serverAddr.sin_addr);
+	::inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr);
 	serverAddr.sin_port = ::htons(7777);
 
-	//connect
-	while (1)
+	// Connect
+	while (true)
 	{
 		if (::connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
 		{
-			//원래 블록했어야 했는데.. 너가 논블로킹으로 하라며
+			// 원래 블록했어야 했는데... 너가 논블로킹으로 하라며?
 			if (::WSAGetLastError() == WSAEWOULDBLOCK)
 				continue;
-
+			// 이미 연결된 상태라면 break
 			if (::WSAGetLastError() == WSAEISCONN)
 				break;
+			// Error
 			break;
+		}
+
+
+		cout << "Connected to Server!" << endl;
+
+		char sendBuffer[100] = "Hello World";
+		WSAEVENT wsaEvent = ::WSACreateEvent();
+		OVERLAPPED overlapped = {};
+		overlapped.hEvent = wsaEvent;
+
+		//Send
+		while (true)
+		{
+			WSABUF wsaBuf;
+			wsaBuf.buf = sendBuffer;
+			wsaBuf.len = 100;
+
+			DWORD sendLen = 0;
+			DWORD flags = 0;
+			if (::WSASend(clientSocket, &wsaBuf, 1, &sendLen, flags, &overlapped, nullptr) == SOCKET_ERROR)
+			{
+				if (::WSAGetLastError() == WSA_IO_PENDING)
+				{
+					::WSAWaitForMultipleEvents(1, &wsaEvent, true, WSA_INFINITE, false);
+					::WSAGetOverlappedResult(clientSocket, &overlapped, &sendLen, false, &flags);
+				}
+				else
+				{
+					//TODO : 문제 있는 상황
+					break;
+				}
+				cout << "data Send Len" << sendBuffer << endl;
+
+
+
+
+
+				//	}
+
+
+						//if (::send(clientSocket, sendBuffer, sizeof(sendBuffer), 0) == SOCKET_ERROR)
+						//{
+						//	 원래 블록했어야 했는데... 너가 논블로킹으로 하라며?
+						//	if (::WSAGetLastError() == WSAEWOULDBLOCK)
+						//		continue;
+						//	 Error
+						//	break;
+						//}
+
+						//cout << "Send Data ! Len = " << sizeof(sendBuffer) << endl;
+
+					//	// Recv
+					//	while (true)
+					//	{
+					//		char recvBuffer[1000];
+					//		int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
+					//		if (recvLen == SOCKET_ERROR)
+					//		{
+					//			// 원래 블록했어야 했는데... 너가 논블로킹으로 하라며?
+					//			if (::WSAGetLastError() == WSAEWOULDBLOCK)
+					//				continue;
+
+					//			// Error
+					//			break;
+					//		}
+					//		else if (recvLen == 0)
+					//		{
+					//			// 연결 끊김
+					//			break;
+					//		}
+
+					//		cout << "Recv Data Len = " << recvLen << endl;
+					//		break;
+					//	}
+
+					//	this_thread::sleep_for(1s);
+					//}
+
+			}
+			// 소켓 리소스 반환
+			//::closesocket(clientSocket);
+
+			// 윈속 종료
+			
 
 		}
+
 	}
-
-	
-
-	//소켓을 전부 사용했으므로 다 정리를 해달라고 부탁함(소켓 리소스 반환)
-	::closesocket(clientSocket); 
-
-	//윈속 종료
-	::WSACleanup();
+	//::WSACleanup();
 }

@@ -48,6 +48,15 @@
     <ClCompile Include="Select Model.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="WSAEVENT.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="overlapped(event).cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Overlapped(callback).cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

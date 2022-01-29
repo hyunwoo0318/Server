@@ -13,11 +13,11 @@
 #pragma comment(lib, "ws2_32.lib")
 
 
-void HandleError(const char* cause)
-{
-	int32 errCode = ::WSAGetLastError();
-	cout << cause << "ErrorCode : " << errCode << endl;
-}
+//void HandleError(const char* cause)
+//{
+//	int32 errCode = ::WSAGetLastError();
+//	cout << cause << "ErrorCode : " << errCode << endl;
+//}
 
 
 //int main()

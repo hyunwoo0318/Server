@@ -21,6 +21,7 @@
 //
 //const int32 BUFSIZE = 1000;
 //
+////클라가 서버에 접속하면 그 정보를 session을 통해서 관리한다.
 //struct Session
 //{
 //	SOCKET socket = INVALID_SOCKET;
@@ -28,8 +29,8 @@
 //	int32 recvBytes = 0;
 //	int32 sendBytes = 0;
 //};
-
-
+//
+//
 //int main()
 //{
 //	//윈속 초기화
@@ -42,7 +43,7 @@
 //	// accept -> 접속한 클라가 있을때
 //	// connect-> 서버 접속에 성공했을때
 //	// send, sendto -> 요청한 데이터를 송신 버퍼에 복사했을때
-//	// recv, recvfrom -> 수신버퍼에 도착한 데이턱 있고, 이를 유저레벨 버퍼에 복사했을때
+//	// recv, recvfrom -> 수신버퍼에 도착한 데이터가 있고, 이를 유저레벨 버퍼에 복사했을때
 //
 //	//논블로킹(Non-Blocking)
 //
@@ -50,6 +51,9 @@
 //	if (listenSocket == INVALID_SOCKET)
 //		return 0;
 //
+//	//FIONBIO는 socket을 I/O 모드로 설정할때 사용하는 커맨드이다
+//	//세번째 인자는 u_long 타입으로 0이면 blocking모드 0이 아니면 non-blocking모드이다.
+//	//ioctlsocket을 호출함으로써 non-blocking상태로 변환한다.
 //	u_long on = 1;
 //	if (::ioctlsocket(listenSocket, FIONBIO, &on) == INVALID_SOCKET)
 //		return 0;
@@ -127,11 +131,11 @@
 //			int32 addrLen = sizeof(clientAddr);
 //			SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
 //			//select는 낙오자는 제거하기때문에 존재하는경우는 client가 접속했음을 알려주는것이다.
+//			//그래서 루프를 돌면서 매번마다 초기화와 등록을 해줘야함.
 //			if (clientSocket != INVALID_SOCKET)
 //			{
 //				cout << " Client Connected" << endl;
-//				sessions.push_back(Session{ clientSocket });
-//
+//				sessions.push_back(Session{clientSocket});
 //			}
 //		}
 //

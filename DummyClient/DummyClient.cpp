@@ -34,20 +34,33 @@ int main()
 	::inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr);
 	serverAddr.sin_port = ::htons(7777);
 
+	cout << "1" << endl;
+
 	// Connect
 	while (true)
 	{
-		if (::connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
+
+		if (::connect(clientSocket, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
 		{
+			HandleError("connect");
 			// 원래 블록했어야 했는데... 너가 논블로킹으로 하라며?
 			if (::WSAGetLastError() == WSAEWOULDBLOCK)
+			{
+				cout << "2" << endl;
 				continue;
+			}
+
 			// 이미 연결된 상태라면 break
 			if (::WSAGetLastError() == WSAEISCONN)
+			{
+				cout << "3" << endl;
 				break;
+			}
+
 			// Error
 			break;
 		}
+	}
 
 
 		cout << "Connected to Server!" << endl;
@@ -78,62 +91,16 @@ int main()
 					//TODO : 문제 있는 상황
 					break;
 				}
-				cout << "data Send Len" << sendBuffer << endl;
-
-
-
-
-
-				//	}
-
-
-						//if (::send(clientSocket, sendBuffer, sizeof(sendBuffer), 0) == SOCKET_ERROR)
-						//{
-						//	 원래 블록했어야 했는데... 너가 논블로킹으로 하라며?
-						//	if (::WSAGetLastError() == WSAEWOULDBLOCK)
-						//		continue;
-						//	 Error
-						//	break;
-						//}
-
-						//cout << "Send Data ! Len = " << sizeof(sendBuffer) << endl;
-
-					//	// Recv
-					//	while (true)
-					//	{
-					//		char recvBuffer[1000];
-					//		int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
-					//		if (recvLen == SOCKET_ERROR)
-					//		{
-					//			// 원래 블록했어야 했는데... 너가 논블로킹으로 하라며?
-					//			if (::WSAGetLastError() == WSAEWOULDBLOCK)
-					//				continue;
-
-					//			// Error
-					//			break;
-					//		}
-					//		else if (recvLen == 0)
-					//		{
-					//			// 연결 끊김
-					//			break;
-					//		}
-
-					//		cout << "Recv Data Len = " << recvLen << endl;
-					//		break;
-					//	}
-
-					//	this_thread::sleep_for(1s);
-					//}
-
 			}
-			// 소켓 리소스 반환
-			//::closesocket(clientSocket);
+			cout << "data Send Len" << sendBuffer << endl;
 
-			// 윈속 종료
-			
-
+			this_thread::sleep_for(1s);
 		}
+		
 
-	}
-	//::WSACleanup();
+
+
+
+
+				
 }

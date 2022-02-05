@@ -17,21 +17,6 @@ Session::~Session()
 	SocketUtils::Close(_socket);
 }
 
-void Session::Send(BYTE* buffer, int32 len)
-{
-	//생각할 문제
-	//1)버퍼 관리/
-	//2) SendEvent 관리? 단일? 여러개? WSASend중첩?
-
-	//TEMP
-	SendEvent* sendEvent = xnew<SendEvent>();
-	sendEvent->owner = shared_from_this();
-	sendEvent->buffer.resize(len);
-	::memcpy(sendEvent->buffer.data(), buffer, len);
-	
-	RegisterSend(sendEvent);
-}
-
 void Session::Disconnect(const WCHAR* cause)
 {
 	if (_connected.exchange(false) == false)
@@ -97,17 +82,8 @@ void Session::RegisterRecv()
 	}
 }
 
-void Session::RegisterSend(SendEvent* sendEvent)
+void Session::RegisterSend()
 {
-	if (IsConnected() == false)
-		return;
-
-	WSABUF wsaBuf;
-	wsaBuf.buf = (char*)sendEvent->buffer.data();
-	wsaBuf.len = (ULONG_PTR)sendEvent->buffer.size();
-
-	DWORD numOfBytes = 0;
-	if(SOCKET_ERROR ==::WSASend(_socket,))
 }
 
 void Session::ProcessConnect()

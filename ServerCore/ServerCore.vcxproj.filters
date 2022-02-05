@@ -69,11 +69,21 @@
     <ClInclude Include="SocketUtils.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="IocpCore.h" />
-    <ClInclude Include="IocpEvent.h" />
-    <ClInclude Include="Listener.h" />
-    <ClInclude Include="Session.h" />
-    <ClInclude Include="Service.h" />
+    <ClInclude Include="IocpCore.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="IocpEvent.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Listener.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Service.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Session.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CorePch.cpp">
@@ -118,10 +128,20 @@
     <ClCompile Include="SocketUtils.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="IocpCore.cpp" />
-    <ClCompile Include="IocpEvent.cpp" />
-    <ClCompile Include="Listener.cpp" />
-    <ClCompile Include="Session.cpp" />
-    <ClCompile Include="Service.cpp" />
+    <ClCompile Include="IocpCore.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="IocpEvent.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Listener.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Service.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Session.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

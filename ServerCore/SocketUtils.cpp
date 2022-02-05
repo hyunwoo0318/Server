@@ -12,7 +12,7 @@ LPFN_ACCEPTEX		SocketUtils::AcceptEx = nullptr;
 void SocketUtils::init()
 {
 	::WSADATA wsaData;
-	ASSERT_CRASH(::WSAStartup(MAKEWORD(2, 2), OUT & wsaData) == 0);
+	ASSERT_CRASH(::WSAStartup(MAKEWORD(2, 2), OUT &wsaData) == 0);
 
 	/* 런타임에 주소를 얻어오는 API*/
 	SOCKET dummySocket = CreateSocket();
@@ -62,7 +62,7 @@ bool SocketUtils::SetRecvBufferSize(SOCKET socket, int32 size)
 
 bool SocketUtils::SetSendBufferSize(SOCKET socket, int32 size)
 {
-	return SetSockOpt(socket, SOL_SOCKET, SO_RCVBUF, size);
+	return SetSockOpt(socket, SOL_SOCKET, SO_SNDBUF, size);
 }
 
 bool SocketUtils::SetTcpNoDelay(SOCKET socket, bool flag)

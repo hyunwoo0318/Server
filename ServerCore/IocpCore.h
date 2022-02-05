@@ -7,7 +7,7 @@
 class IocpObject : public enable_shared_from_this<IocpObject>	
 {
 public:
-	weak_ptr<IocpObject> _Wptr;
+	
 public:
 	virtual HANDLE GetHandle() abstract;
 	virtual void Dispatch(class IocpEvent* iocpEvent, int32 numOfBytes = 0) abstract;
@@ -15,6 +15,7 @@ public:
 
 
 };
+
 
 /*-----------
 	IocpCore

@@ -24,7 +24,8 @@
 //struct Session
 //{
 //	SOCKET socket = INVALID_SOCKET;
-//	char recvBuffer[BUFSIZE];
+//	char 
+// Buffer[BUFSIZE];
 //	int32 recvBytes = 0;
 //	int32 sendBytes = 0;
 //	WSAOVERLAPPED overlapped = {};

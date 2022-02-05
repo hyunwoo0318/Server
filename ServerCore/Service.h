@@ -19,8 +19,8 @@ using SessionFactory = function<SessionRef(void)>;
 class Service :public enable_shared_from_this<Service>
 {
 public:
-	Service(ServiceType type, NetworkAddress address, IocpObjectRef core, SessionFactory factory, int32 maxSessionCount = 1);
-	virtual ~Service();
+	Service(ServiceType type, NetworkAddress address, IocpCoreRef core, SessionFactory factory, int32 maxSessionCount = 1);
+	virtual ~Service() {};
 
 	virtual bool Start() abstract;
 	bool CanStart() { return _sessionFactory != nullptr; }
@@ -42,7 +42,7 @@ public:
 protected:
 	USE_LOCK;
 	ServiceType _type;
-	NetworkAddress _netAddress;
+	NetworkAddress _netAddress = {};
 	IocpCoreRef _iocpCore;
 
 	set<SessionRef> _sessions;
@@ -58,7 +58,7 @@ protected:
 class ClientService : public Service
 {
 public:
-	ClientService(NetworkAddress targetaddress, IocpObjectRef core, SessionFactory factory, int32 maxSessionCount = 1);
+	ClientService(NetworkAddress targetaddress, IocpCoreRef core, SessionFactory factory, int32 maxSessionCount = 1);
 	virtual ~ClientService() {};
 
 	virtual bool Start() override;
@@ -73,7 +73,7 @@ public:
 class ServerService : public Service
 {
 public:
-	ServerService(NetworkAddress address, IocpObjectRef core, SessionFactory factory, int32 maxSessionCount = 1);
+	ServerService(NetworkAddress address, IocpCoreRef core, SessionFactory factory, int32 maxSessionCount = 1);
 	virtual ~ServerService() {};
 
 	virtual bool Start() override;

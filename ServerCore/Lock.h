@@ -18,7 +18,7 @@ class Lock
 
 	enum : uint32
 	{
-		ACQUIRE_TIMEOUT_TICK = 10000, // 최대로 기다릴 시간
+		ACQUIRE_TIMEOUT_TICK = 100000000, // 최대로 기다릴 시간
 		MAX_SPIN_COUNT = 5000, // 최대 몇바퀴 돌릴껀지
 		WRITE_THREAD_MASK = 0xFFFF'0000,
 		//상위 16비트를 뽑아내기 위한 마스크 설정

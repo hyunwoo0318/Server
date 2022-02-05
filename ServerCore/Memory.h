@@ -34,13 +34,11 @@ private:
 };
 
 
-template<typename Type, typename ...Args>
+template<typename Type, typename... Args>
 Type* xnew(Args&&... args)
 {
-	Type* memory = static_cast<Type*>(BaseAllocator::Alloc(sizeof(Type)));
-
-	//placement new
-	new(memory) Type(forward<Args>(args)...);
+	Type* memory = static_cast<Type*>(PoolAllocator::Alloc(sizeof(Type)));
+	new(memory)Type(forward<Args>(args)...); // placement new
 	return memory;
 }
 
@@ -48,11 +46,11 @@ template<typename Type>
 void xdelete(Type* obj)
 {
 	obj->~Type();
-	_xrelease(obj);
+	PoolAllocator::Release(obj);
 }
 
 template<typename Type, typename... Args>
 shared_ptr<Type> MakeShared(Args&&... args)
 {
-	return shared_ptr<Type>{xnew<Type>(forward<Args>(args)...), xdelete<Type> };
+	return shared_ptr<Type>{ xnew<Type>(std::forward<Args>(args)...), xdelete<Type> };
 }

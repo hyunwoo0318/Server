@@ -14,7 +14,7 @@ void HandleError(const char* cause)
 
 int main()
 {
-	this_thread::sleep_for(1s);
+	
 
 	WSAData wsaData;
 	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
@@ -67,9 +67,10 @@ int main()
 
 		char sendBuffer[100] = "Hello World";
 		WSAEVENT wsaEvent = ::WSACreateEvent();
-		OVERLAPPED overlapped = {};
+		WSAOVERLAPPED overlapped = {};
 		overlapped.hEvent = wsaEvent;
 
+		cout << "4" << endl;
 		//Send
 		while (true)
 		{
@@ -83,18 +84,20 @@ int main()
 			{
 				if (::WSAGetLastError() == WSA_IO_PENDING)
 				{
-					::WSAWaitForMultipleEvents(1, &wsaEvent, true, WSA_INFINITE, false);
-					::WSAGetOverlappedResult(clientSocket, &overlapped, &sendLen, false, &flags);
+					::WSAWaitForMultipleEvents(1, &wsaEvent, TRUE, WSA_INFINITE, FALSE);
+					::WSAGetOverlappedResult(clientSocket, &overlapped, &sendLen, FALSE, &flags);
 				}
 				else
 				{
+					HandleError("dw");
 					//TODO : 문제 있는 상황
 					break;
 				}
 			}
-			cout << "data Send Len" << sendBuffer << endl;
+			cout << "data Send Len " << sizeof(sendBuffer) << endl;
 
 			this_thread::sleep_for(1s);
+			
 		}
 		
 

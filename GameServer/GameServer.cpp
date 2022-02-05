@@ -17,12 +17,17 @@
 #include"session.h"
 #include"service.h"
 
+class GameSession : public Session
+{
+
+};
+
 int main()
 {
-	ServerServiceRef service = make_shared<ServerService>(
+	ServerServiceRef service = MakeShared<ServerService>(
 		NetworkAddress(L"127.0.0.1", 7777),
-		make_shared<IocpCore>(),
-		make_shared<Session>,
+		MakeShared<IocpCore>(),
+		MakeShared<GameSession>,
 		100);
 		
 	ASSERT_CRASH(service->Start());

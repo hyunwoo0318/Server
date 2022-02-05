@@ -61,16 +61,20 @@ void* Memory::Allocate(int32 size)
 	MemoryHeader* header = nullptr;
 	const int32 allocSize = size + sizeof(MemoryHeader);
 
+#ifdef _STOMP
+	header = reinterpret_cast<MemoryHeader*>(StompAllocator::Alloc(allocSize));
+#else
 	if (allocSize > MAX_ALLOC_SIZE)
 	{
-		//메모리 풀링 최대 크기를 벗어나면 일반 할당
-		header = reinterpret_cast<MemoryHeader*>(::malloc(allocSize));
+		// 메모리 풀링 최대 크기를 벗어나면 일반 할당
+		header = reinterpret_cast<MemoryHeader*>(::_aligned_malloc(allocSize, SLIST_ALIGNMENT));
 	}
 	else
 	{
-		//메모리 풀에서 꺼내온다.
+		// 메모리 풀에서 꺼내온다
 		header = _poolTable[allocSize]->Pop();
 	}
+#endif	
 
 	return MemoryHeader::AttachHeader(header, allocSize);
 }

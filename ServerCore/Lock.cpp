@@ -25,12 +25,12 @@ void Lock::WriteLock(const char* name)
 
 	//아무도 소유 및 공유하고 있지 않을때, 경합해서 소유권을 얻음
 	//-- 모든 값이 empty flag인 경우임.
-	if (_lockflag == EMPTY_FLAG)
-	{
-		const int32 desired = ((LThreadId << 16) && WRITE_THREAD_MASK);
-		_lockflag = desired;
-		// 멀티쓰레드 환경에서는 중간에 누가 쓸수 있기때문에 따로해야함
-	}
+	//if (_lockflag == EMPTY_FLAG)
+	//{
+	//	const int32 desired = ((LThreadId << 16) && WRITE_THREAD_MASK);
+	//	_lockflag = desired;
+	//	// 멀티쓰레드 환경에서는 중간에 누가 쓸수 있기때문에 따로해야함
+	//}
 	const int64 beginTick = ::GetTickCount64();
 	const uint32 desired = ((LThreadId << 16) & WRITE_THREAD_MASK);
 	while (1)
@@ -58,7 +58,7 @@ void Lock::WriteUnlock(const char* name)
 #endif
 	//ReadLock을 풀기 전에는 WriteLock이 불가능
 	if ((_lockflag.load() & READ_COUNT_MASK) != 0)
-		CRASH("invalid unlock oreder");
+		CRASH("invalid unlock order");
 
 	const int32 lockCount = --_writecount;
 	if (lockCount == 0)

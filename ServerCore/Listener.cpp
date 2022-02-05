@@ -70,12 +70,12 @@ void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 	SessionRef session = _service->CreateSession(); // register IOCP
 
 	acceptEvent->Init();
-	acceptEvent->_session = session;
+	acceptEvent->session = session;
 
 	DWORD ByteRecieved = 0;
 
 	if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->_recvBuffer, 0,
-		sizeof(SOCKADDR) + 16, sizeof(SOCKADDR) + 16, &ByteRecieved,
+		sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, &ByteRecieved,
 		static_cast<LPOVERLAPPED>(acceptEvent)))
 	{
 		const int32 ErrCode = WSAGetLastError();
@@ -89,17 +89,18 @@ void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 
 void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 {
-	SessionRef session = acceptEvent->_session;
+	SessionRef session = acceptEvent->session;
 
 	if (false == SocketUtils::SetUpdateAcceptSocket(session->GetSocket(), _socket))
 	{
 		//실패를 해도 무조건 다시 손님을 받을수 있게 register을 다시 해줘야함
 		RegisterAccept(acceptEvent);
 		return;
+		
 	}
 	SOCKADDR_IN sockAddress = {};
 	int32 sizeOfSockAddr = sizeof(sockAddress);
-	if (SOCKET_ERROR == ::getpeername(session->GetSocket(), reinterpret_cast<sockaddr*>(&acceptEvent),
+	if (SOCKET_ERROR == ::getpeername(session->GetSocket(), reinterpret_cast<sockaddr*>(&sockAddress),
 		&sizeOfSockAddr))
 	{
 		RegisterAccept(acceptEvent);
@@ -108,7 +109,7 @@ void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 
 	session->SetNetAddress(NetworkAddress(sockAddress));
 
-	cout << "Client connected" << endl;
+	session->ProcessConnect();
 
 	RegisterAccept(acceptEvent);
 }

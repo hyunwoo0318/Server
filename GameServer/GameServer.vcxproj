@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp" />
+    <ClCompile Include="IOCP.cpp" />
     <ClCompile Include="LockFreeStack.cpp" />
     <ClCompile Include="Lock구현_main.cpp" />
     <ClCompile Include="Non-Blocking.cpp" />

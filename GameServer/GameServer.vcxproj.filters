@@ -57,6 +57,9 @@
     <ClCompile Include="Overlapped(callback).cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="IOCP.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

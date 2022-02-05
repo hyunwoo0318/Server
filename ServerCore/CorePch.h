@@ -9,6 +9,7 @@
 #include<Windows.h>
 #include <iostream>
 #include"Lock.h"
+#include"Memory.h"
 using namespace std;
 
 #include<WinSock2.h>

@@ -67,22 +67,24 @@ bool SocketUtils::SetSendBufferSize(SOCKET socket, int32 size)
 
 bool SocketUtils::SetTcpNoDelay(SOCKET socket, bool flag)
 {
-	return false;
+	return SetSockOpt(socket, SOL_SOCKET, TCP_NODELAY, flag);
 }
 
+//ListenSocket의 특성을 ClientSocket의 특성을 바꿈
 bool SocketUtils::SetUpdateAcceptSocket(SOCKET socket, SOCKET listenSocket)
 {
-	return false;
+	return SetSockOpt(socket, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, listenSocket);
 }
 
-bool SocketUtils::Close(SOCKET& socket)
+void  SocketUtils::Close(SOCKET& socket)
 {
 	if(socket != INVALID_SOCKET)
 	::closesocket(socket);
 	socket = INVALID_SOCKET;
+	
 }
 
-bool SocketUtils::BInd(SOCKET socket, NetworkAddress netAddr)
+bool SocketUtils::Bind(SOCKET socket, NetworkAddress netAddr)
 {
 	return SOCKET_ERROR != ::bind(socket, reinterpret_cast<const sockaddr*>(&netAddr.GetSockAddr()), sizeof(SOCKADDR_IN));
 }

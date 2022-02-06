@@ -19,7 +19,19 @@
 
 class GameSession : public Session
 {
+public:
+	virtual int32 OnRecv(BYTE* buffer, int32 len) override
+	{
+		//Echo
+		cout << "OnRecv Len" << endl;
+		Send(buffer, len);
+		return len;
+	}
 
+	virtual void OnSend(int32 len) override
+	{
+		cout << "onsend Len" << endl;
+	}
 };
 
 int main()
